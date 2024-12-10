@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main class="container">
+    <div class="row">
+        <div class="col-md-4 offset-md-4 mt-5">
+
+            <!-- Formulario para crear una tarea, usando un formulario de Django con el método POST -->
+            <form action="{% url 'create_task' %}" method="POST" class="card card-body">
+
+                <!-- Título centrado dentro de la tarjeta -->
+                <h1 class="text-center">Create Task</h1>
+
+                <!-- Muestra los errores de validación del formulario si existen -->
+                {{ error }}
+
+                <!-- Token CSRF (Cross-Site Request Forgery) para la seguridad del formulario -->
+                {% csrf_token %}
+
+                <!-- Renderiza el formulario de Django en formato de párrafo (form.as_p) -->
+                {{ form.as_p }}
+
+                <!-- Botón para enviar el formulario -->
+                <button class="btn btn-primary">
+                    Save
+                </button>
+            </form>
+
+        </div>
+    </div>
+</main>
+
+{% endblock %}

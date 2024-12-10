@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Contenedor principal de la página con espacio inferior -->
+<main class="container" style="padding-bottom: 3rem">
+    <div class="row justify-content-center">
+        <!-- Columna centralizada con tamaño medio para pantallas pequeñas y grandes -->
+        <div class="col-md-6 col-lg-4">
+
+            <!-- Título de la página con formato de texto centrado y margen superior/inferior -->
+            <h1 class="text-center text-secondary mt-4 mb-4">Edit: {{ task.title }}</h1>
+
+            <!-- Si hay un error, muestra una alerta con el mensaje de error -->
+            {% if error %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+            {% endif %}
+
+            <!-- Tarjeta con sombra que contiene el formulario para editar la tarea -->
+            <div class="card shadow p-4">
+                <!-- Formulario para actualizar la tarea -->
+                <form method="POST" id="updateTaskForm" class="mb-4">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="d-grid">
+                        <!-- Botón para abrir el modal de confirmación de la actualización -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">
+                            Update
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Botones para completar o eliminar la tarea, con diseño flexible (d-flex) -->
+                <div class="d-flex gap-2">
+                    <!-- Formulario para alternar entre tarea completa e incompleta -->
+                    <form action="{% url 'complete_task' task.id %}" method="POST" class="w-50">
+                        {% csrf_token %}
+                        <!-- El botón cambia de estilo y texto según el estado de la tarea (completa o pendiente) -->
+                        <button type="submit" class="btn {% if task.date_completed %}btn-warning{% else %}btn-success{% endif %} w-100">
+                            {% if task.date_completed %}
+                                Pending
+                            {% else %}
+                                Complete
+                            {% endif %}
+                        </button>
+                    </form>
+
+                    <!-- Botón para abrir el modal de confirmación de eliminación -->
+                    <button class="btn btn-danger w-50" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        Delete
+                    </button>
+                </div>
+
+                <!-- Modal de confirmación para actualizar la tarea -->
+                <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <!-- Cabecera del modal con título -->
+                            <div class="modal-header text-center w-100">
+                                <h5 class="modal-title w-100" id="updateModalLabel">Confirmar actualización</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <!-- Cuerpo del modal con mensaje de confirmación -->
+                            <div class="modal-body text-center">
+                                ¿Estás seguro de que deseas actualizar esta tarea?
+                            </div>
+                            <!-- Pie del modal con botones de cancelar o confirmar -->
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" form="updateTaskForm" class="btn btn-primary">Actualizar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal de confirmación para eliminar la tarea -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <!-- Cabecera del modal con título -->
+                            <div class="modal-header text-center w-100">
+                                <h5 class="modal-title w-100" id="deleteModalLabel">Confirmar eliminación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <!-- Cuerpo del modal con mensaje de confirmación -->
+                            <div class="modal-body text-center">
+                                ¿Estás seguro de que deseas eliminar esta tarea?
+                            </div>
+                            <!-- Pie del modal con botones de cancelar o confirmar -->
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <!-- Formulario para confirmar la eliminación de la tarea -->
+                                <form action="{% url 'delete_task' task.id %}" method="POST" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</main>
+
+{% endblock %}

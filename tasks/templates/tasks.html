@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Contenedor principal con tareas pendientes -->
+<main class="container">
+  <div class="row justify-content-center">
+    <!-- Columna principal para mostrar las tareas -->
+    <div class="col-md-8">
+      <!-- Título centralizado de las tareas pendientes -->
+      <h1 class="text-center display-4 py-5">Pending Tasks</h1>
+
+      <!-- Sección de explicación de colores según prioridad de las tareas -->
+      {% if tasks %}
+        <div class="mb-4 p-3 border bg-light rounded">
+          <h5 class="card-title fw-bold text-center">Prioridad de Tareas</h5>
+          <p>
+            <span class="badge bg-warning text-dark">Importante</span> – Tareas de alta prioridad.
+          </p>
+          <p>
+            <span class="badge bg-secondary">Normal</span> – Tareas de prioridad baja.
+          </p>
+        </div>
+      {% endif %}
+      <!-- Fin de la sección de colores -->
+
+      <div class="row">
+        <!-- Iteración sobre las tareas si existen -->
+        {% if tasks %}
+          {% for task in tasks %}
+            <!-- Cada tarea ocupa 12 columnas completas en pantallas pequeñas -->
+            <div class="col-12 mb-4">
+              <!-- Enlace a la página de detalles de la tarea, con estilos según su prioridad -->
+              <a href="{% url 'task_detail' task.id %}" class="text-decoration-none text-dark">
+                <!-- La tarjeta cambia de borde según la importancia de la tarea -->
+                <div class="card {% if task.important %}border-warning{% else %}border-secondary{% endif %} mb-3" style="max-width: 100%;">
+                  <div class="card-header {% if task.important %}border-warning{% else %}border-secondary{% endif %}">
+                    <!-- Título de la tarea centrado -->
+                    <h5 class="card-title fw-bold text-center">{{ task.title }}</h5>
+                  </div>
+                  <div class="card-body">
+                    <!-- Descripción de la tarea -->
+                    <p class="card-text">{{ task.description }}</p>
+                    <!-- Nombre del autor de la tarea -->
+                    <p class="card-text">
+                      <small class="text-body-secondary">Author: {{ task.user.username }}</small>
+                    </p>
+                    <!-- Fecha de finalización si la tarea ya está completada -->
+                    {% if task.date_completed %}
+                      <p class="text-muted small">Completed on: {{ task.date_completed|date:'M j Y, H:i' }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <!-- Mensaje cuando no hay tareas pendientes -->
+          <div class="alert alert-info text-center" style="font-size: 1.2em;" role="alert">
+            No hay tareas pendientes en este momento. Pincha
+            <a href="{% url 'create_task' %}" class="alert-link">aquí</a>
+            para crear una nueva tarea.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Notificación de toast para mensajes importantes -->
+{% if messages %}
+  <div aria-live="polite" aria-atomic="true" class="position-relative">
+      <!-- Contenedor del toast, situado en la parte inferior derecha -->
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+          <!-- El color del toast depende del tipo de mensaje (editar, completar, eliminar, etc.) -->
+          <div id="taskToast" class="toast
+              {% if toast_type == 'edit' %}bg-primary
+              {% elif toast_type == 'complete' %}bg-success
+              {% elif toast_type == 'deleted' %}bg-danger
+              {% elif toast_type == 'uncomplete' %}bg-warning
+              {% else %}bg-success{% endif %} text-white toast-custom-font"
+              role="alert" aria-live="assertive" aria-atomic="true" style="opacity: 0.9;" data-bs-delay="4000">
+
+              <!-- Contenido del toast con el mensaje -->
+              <div class="toast-body text-center">
+                  {% for message in messages %}
+                    {{ message }}
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Estilos y animación del toast -->
+  <style>
+    @keyframes fadeOut {
+        0% {
+            opacity: 0.9;
+        }
+        25% {
+            opacity: 0.9; /* Mantener opacidad alta durante 1 segundo */
+        }
+        100% {
+            opacity: 0; /* Desaparecer completamente al final de los 4 segundos */
+        }
+    }
+
+    /* Animación para hacer desaparecer el toast gradualmente */
+    .fade-out {
+        animation: fadeOut 3s forwards;
+        animation-delay: 1s; /* Iniciar la animación después de 1 segundo */
+    }
+
+    /* Definir tamaño de la fuente y ceñir el toast */
+    .toast-custom-font {
+        font-size: 1.1em; /* Aumenta ligeramente el tamaño de la fuente */
+    }
+
+    /* Ajustar el ancho y alto del toast según el contenido */
+    #taskToast {
+        display: inline-block;  /* Para que el ancho se ajuste al contenido */
+        max-width: fit-content; /* Ajustar el ancho al texto, sin exceder el contenido */
+        padding: 0.5rem 0.75rem; /* Espaciado más pequeño, ceñido al texto */
+        word-wrap: break-word;  /* Para dividir palabras largas si es necesario */
+    }
+
+    /* Ajustar la altura del toast para ceñirlo más al texto */
+    .toast-body {
+        padding: 0.25rem 0.5rem; /* Reducir el padding interno de la caja del mensaje */
+    }
+  </style>
+
+  <!-- Script para mostrar el toast y luego hacer que desaparezca progresivamente -->
+  <script>
+      window.onload = function() {
+          var toastEl = document.getElementById('taskToast');
+          var toast = new bootstrap.Toast(toastEl);
+          toast.show();
+
+          // Esperar 1 segundo antes de aplicar el desvanecimiento progresivo
+          setTimeout(function() {
+              toastEl.classList.add('fade-out');
+          }, 1000); // Desvanecimiento comienza después de 1 segundo
+      }
+  </script>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Contenedor principal de la página -->
+<main class="container">
+    <div class="row">
+        <!-- Sección centrada con columna de tamaño medio (col-md-4) y un margen superior (mt-5) -->
+        <div class="col-md-4 offset-md-4 mt-5">
+
+            <!-- Formulario de registro (Sign Up) con clases de Bootstrap para estilo -->
+            <form action="{% url 'signup' %}" method="POST" class="card card-body">
+
+                <!-- Título del formulario centrado -->
+                <h1 class="text-center">SignUp</h1>
+
+                <!-- Condicional para mostrar un mensaje de error si existe -->
+                {% if error %}
+                    <div class="alert alert-danger text-center" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <!-- Token CSRF para proteger contra ataques Cross-Site Request Forgery -->
+                {% csrf_token %}
+
+                <!-- Campo de entrada para el nombre de usuario -->
+                <div class="mb-3">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Write your username">
+                </div>
+
+                <!-- Campo de entrada para la contraseña -->
+                <div class="mb-3">
+                    <label for="password1">Password</label>
+                    <input type="password" name="password1" id="password1" class="form-control" placeholder="Write your password">
+                </div>
+
+                <!-- Campo de entrada para confirmar la contraseña -->
+                <div class="mb-3">
+                    <label for="password2">Confirm your password</label>
+                    <input type="password" name="password2" id="password2" class="form-control" placeholder="Write your password">
+                </div>
+
+                <!-- Botón de envío para registrar la cuenta -->
+                <button class="btn btn-primary btn-block">
+                    Sign Up
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Contenedor principal de la página -->
+<main class="container">
+    <div class="row">
+        <!-- Sección centrada con columna de tamaño medio (col-md-4) y un margen superior (mt-5) -->
+        <div class="col-md-4 offset-md-4 mt-5">
+
+            <!-- Formulario para iniciar sesión -->
+            <form action="{% url 'login' %}" method="POST" class="card card-body">
+
+                <!-- Título del formulario centrado -->
+                <h1 class="text-center">SignIn</h1>
+
+                <!-- Condicional que muestra un mensaje de error si existe -->
+                {% if error %}
+                    <div class="alert alert-danger text-center" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <!-- Token CSRF para protección contra ataques Cross-Site Request Forgery -->
+                {% csrf_token %}
+
+                <!-- Campo de entrada para el nombre de usuario -->
+                <div class="mb-3">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Write your username">
+                </div>
+
+                <!-- Campo de entrada para la contraseña -->
+                <div class="mb-3">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Write your password">
+                </div>
+
+                <!-- Botón de envío del formulario -->
+                <button class="btn btn-primary btn-block">
+                    Login
+                </button>
+
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

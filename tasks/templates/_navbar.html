@@ -1,0 +1,68 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <!-- Barra de navegación con estilo Bootstrap y color de fondo oscuro -->
+  <div class="container">
+    <!-- Nombre de la aplicación, que actúa como enlace a la página de inicio -->
+    <a class="navbar-brand" href="{% url 'home' %}">TaskApp</a>
+
+    <!-- Botón para colapsar el menú en pantallas pequeñas (dispositivos móviles) -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Elementos del menú de navegación -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <!-- Enlace a la página de inicio -->
+        <li class="nav-item">
+          <a href="{% url 'home' %}" class="nav-link">Home</a>
+        </li>
+
+        <!-- Si el usuario está autenticado, mostrar opciones relacionadas con tareas -->
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <!-- Enlace a la lista de tareas pendientes -->
+          <a href="{% url 'tasks' %}" class="nav-link">Tasks</a>
+        </li>
+        <li class="nav-item">
+          <!-- Enlace a las tareas completadas -->
+          <a href="{% url 'tasks_completed' %}" class="nav-link">Completed Tasks</a>
+        </li>
+        <li class="nav-item">
+          <!-- Enlace para crear una nueva tarea -->
+          <a href="{% url 'create_task' %}" class="nav-link">Create Task</a>
+        </li>
+        <li class="nav-item">
+          <!-- Enlace para cerrar sesión -->
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+
+        <!-- Si el usuario NO está autenticado, mostrar opciones de login y registro -->
+        {% else %}
+        <li class="nav-item">
+          <!-- Enlace a la página de inicio de sesión -->
+          <a href="{% url 'login' %}" class="nav-link">Login</a>
+        </li>
+        <li class="nav-item">
+          <!-- Enlace a la página de registro -->
+          <a href="/signup" class="nav-link">Register</a>
+        </li>
+        {% endif %}
+
+        <!-- Enlace al repositorio de GitHub -->
+        <li class="nav-item">
+          <a href="https://github.com/TheGreatVictorD/DjangoCrudAuth/" target="_blank" class="nav-link">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

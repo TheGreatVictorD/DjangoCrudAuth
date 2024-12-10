@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Contenedor principal para mostrar las tareas completadas -->
+<main class="container">
+  <div class="row justify-content-center">
+    <!-- Columna principal donde se mostrarán las tareas -->
+    <div class="col-md-8">
+      <!-- Título centralizado para las tareas completadas -->
+      <h1 class="text-center display-4 py-5">Tasks Done</h1>
+
+      <div class="row">
+        <!-- Iteración sobre las tareas completadas -->
+        {% if tasks %}
+          {% for task in tasks %}
+            <!-- Cada tarea ocupa 12 columnas completas en pantallas pequeñas -->
+            <div class="col-12 mb-4">
+              <!-- Enlace a la página de detalles de la tarea -->
+              <a href="{% url 'task_detail' task.id %}" class="text-decoration-none text-dark">
+                <!-- Tarjeta para cada tarea completada, con borde verde -->
+                <div class="card border-success mb-3" style="max-width: 100%;">
+                  <div class="card-header border-success">
+                    <!-- Título de la tarea, con texto verde y centrado -->
+                    <h5 class="card-title fw-bold text-success text-center">{{ task.title }}</h5>
+                  </div>
+                  <div class="card-body">
+                    <!-- Descripción de la tarea -->
+                    <p class="card-text">{{ task.description }}</p>
+                    <!-- Nombre del autor de la tarea -->
+                    <p class="card-text">
+                      <small class="text-body-secondary">Author: {{ task.user.username }}</small>
+                    </p>
+                    <!-- Fecha en la que se completó la tarea -->
+                    <p class="text-muted small">Completed on: {{ task.date_completed|date:'M j Y, H:i' }}</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <!-- Mensaje cuando no hay tareas completadas -->
+          <div class="alert alert-info text-center" style="font-size: 1.2em;" role="alert">
+            No hay tareas completadas en este momento. Pincha
+            <a href="{% url 'create_task' %}" class="alert-link">aquí</a>
+            para crear una nueva tarea.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}
